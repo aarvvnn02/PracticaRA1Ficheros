@@ -88,8 +88,36 @@ public class ProductoService {
         }
 
         beneficioTotal = beneficioTotal.setScale(2, RoundingMode.HALF_UP);
-        
+
+        // Resultado
+        SummaryEntity summary = new SummaryEntity();
+
+        summary.setName(fecha);
+        summary.setNumberOfProducts(productos.size());
+        summary.setTotalProfit(beneficioTotal);
+        summary.setFileAbsolutePath(ficheroXml.getAbsolutePath());
+        summary.setFileName(nombreFichero);
+        summary.setFileSize(ficheroXml.length());
+
+        File carpeta = new File(path);
+
+        if (!carpeta.exists()) {
+            carpeta.mkdirs();
+        }
+
+        // Crear el fichero nuevo
+        File ficheroResultado = new File(
+                carpeta,
+                "result_" + fecha + ".txt"
+        );
+
+        FileWriter writer = new FileWriter(ficheroResultado);
+
+        writer.write(summary.toPrint());
+
+        writer.close();
     }
+
 
     public void exportExcel(String path, String fileXml)
             throws JAXBException, IOException, ParseException {
