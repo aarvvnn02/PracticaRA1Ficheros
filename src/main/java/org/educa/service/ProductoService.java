@@ -9,6 +9,7 @@ import org.educa.entity.ProductoEntity;
 import org.educa.entity.SummaryEntity;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -222,6 +223,93 @@ public class ProductoService {
                 FillPatternType.SOLID_FOREGROUND);
 
         estiloFila2.setAlignment(HorizontalAlignment.CENTER);
+
+        // Productos
+
+        int numeroFila = 1;
+
+        for (ProductoEntity producto : productos) {
+
+            Row fila = hoja.createRow(numeroFila);
+
+            CellStyle estilo;
+
+            if (numeroFila % 2 == 0) {
+                estilo = estiloFila2;
+            } else {
+                estilo = estiloFila1;
+            }
+
+            // Codigo
+            Cell codigo = fila.createCell(0);
+            codigo.setCellValue(producto.getProducto().getCodigo());
+            codigo.setCellStyle(estilo);
+
+
+            // Numero de serie
+            Cell numeroSerie = fila.createCell(1);
+            numeroSerie.setCellValue(producto.getProducto().getNumeroSerie());
+            numeroSerie.setCellStyle(estilo);
+
+
+            // Precio
+            Cell precio = fila.createCell(2);
+            precio.setCellValue(producto.getProducto().getPrecio().doubleValue());
+            precio.setCellStyle(estilo);
+
+
+            // Descuento
+            Cell descuento = fila.createCell(3);
+            descuento.setCellValue(
+                    producto.getProducto().getDescuento().doubleValue() / 100);
+            descuento.setCellStyle(estilo);
+
+
+            // Precio final
+            Cell precioFinal = fila.createCell(4);
+            precioFinal.setCellValue(producto.getPrecioFinal().doubleValue());
+            precioFinal.setCellStyle(estilo);
+
+
+            // Costes envio
+            Cell envio = fila.createCell(5);
+            envio.setCellValue(
+                    producto.getProducto().getCostes().getCostesEnvio().doubleValue());
+            envio.setCellStyle(estilo);
+
+
+            // Costes almacenaje
+            Cell almacenaje = fila.createCell(6);
+            almacenaje.setCellValue(
+                    producto.getProducto().getCostes().getCostesAlmacenaje().doubleValue());
+            almacenaje.setCellStyle(estilo);
+
+
+            // Beneficio
+            Cell beneficio = fila.createCell(7);
+            beneficio.setCellValue(producto.getProfit().doubleValue());
+            beneficio.setCellStyle(estilo);
+
+
+            numeroFila++;
+        }
+
+
+        // Columnas
+
+        for (int i = 0; i < nombresColumnas.length; i++) {
+            hoja.autoSizeColumn(i);
+        }
+
+
+        // Guardar
+
+        FileOutputStream salida = new FileOutputStream(ficheroExcel);
+
+        workbook.write(salida);
+
+        salida.close();
+
 
     }
 
