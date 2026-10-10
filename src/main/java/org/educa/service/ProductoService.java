@@ -5,6 +5,7 @@ import jakarta.xml.bind.JAXBException;
 import org.educa.dao.ProductoDAO;
 import org.educa.entity.ProductoEntity;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -58,7 +59,36 @@ public class ProductoService {
     public void exportSummary(String path, String fileXml)
             throws JAXBException, IOException {
 
-        // Se hará en el ejercicio 2
+        List<ProductoEntity> productos = readFile(fileXml);
+
+        // Crear el fichero XML
+        File ficheroXml = new File(fileXml);
+
+        // Sacar nombre fichero
+        String nombreFichero = ficheroXml.getName();
+
+        int posicionPunto = nombreFichero.lastIndexOf(".");
+
+        if (posicionPunto > 0) {
+            nombreFichero = nombreFichero.substring(0, posicionPunto);
+        }
+
+        // Sacar mes y año fichero
+        String nombreSinExtension = nombreFichero;
+
+        String fecha = nombreSinExtension.substring(
+                nombreSinExtension.indexOf("_") + 1
+        );
+
+        // Calcular total
+        BigDecimal beneficioTotal = BigDecimal.ZERO;
+
+        for (ProductoEntity producto : productos) {
+            beneficioTotal = beneficioTotal.add(producto.getProfit());
+        }
+
+        beneficioTotal = beneficioTotal.setScale(2, RoundingMode.HALF_UP);
+        
     }
 
     public void exportExcel(String path, String fileXml)
