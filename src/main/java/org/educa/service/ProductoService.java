@@ -2,10 +2,14 @@ package org.educa.service;
 
 import generated.Producto;
 import jakarta.xml.bind.JAXBException;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.educa.dao.ProductoDAO;
 import org.educa.entity.ProductoEntity;
+import org.educa.entity.SummaryEntity;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -118,10 +122,107 @@ public class ProductoService {
         writer.close();
     }
 
-
     public void exportExcel(String path, String fileXml)
             throws JAXBException, IOException, ParseException {
 
-        // Se hará en el ejercicio 3
+        List<ProductoEntity> productos = readFile(fileXml);
+
+        // Nombre del archivo XML
+        File ficheroXml = new File(fileXml);
+        String nombreFichero = ficheroXml.getName();
+
+        int posicionPunto = nombreFichero.lastIndexOf(".");
+
+        if (posicionPunto > 0) {
+            nombreFichero = nombreFichero.substring(0, posicionPunto);
+        }
+
+        // Fecha del nombre del archivo
+        int posicionGuion = nombreFichero.indexOf("_");
+        String fecha = nombreFichero.substring(posicionGuion + 1);
+
+        // Crear la carpeta
+        File carpeta = new File(path);
+
+        if (!carpeta.exists()) {
+            carpeta.mkdirs();
+        }
+
+        // Crear Excel
+        File ficheroExcel = new File(carpeta, "export_" + fecha + ".xlsx");
+
+        Workbook workbook = new XSSFWorkbook();
+
+        Sheet hoja = workbook.createSheet("Productos");
+
+
+        // Estilo cabecera
+
+        CellStyle estiloCabecera = workbook.createCellStyle();
+
+        estiloCabecera.setAlignment(HorizontalAlignment.CENTER);
+
+        estiloCabecera.setFillForegroundColor(
+                IndexedColors.GREY_25_PERCENT.getIndex());
+
+        estiloCabecera.setFillPattern(
+                FillPatternType.SOLID_FOREGROUND);
+
+        // Crear letra en negrita
+        org.apache.poi.ss.usermodel.Font fuente = workbook.createFont();
+        fuente.setBold(true);
+
+        estiloCabecera.setFont(fuente);
+
+
+        // Cabecera
+
+        Row filaCabecera = hoja.createRow(0);
+
+        String[] nombresColumnas = {
+                "Codigo",
+                "Número de Serie",
+                "Precio",
+                "Descuento",
+                "Precio Final",
+                "Costes Envío",
+                "Costes Almacenaje",
+                "Beneficio"
+        };
+
+        for (int i = 0; i < nombresColumnas.length; i++) {
+
+            Cell celda = filaCabecera.createCell(i);
+
+            celda.setCellValue(nombresColumnas[i]);
+
+            celda.setCellStyle(estiloCabecera);
+        }
+
+
+        // Estilo fila
+
+        CellStyle estiloFila1 = workbook.createCellStyle();
+
+        estiloFila1.setFillForegroundColor(
+                IndexedColors.LIGHT_BLUE.getIndex());
+
+        estiloFila1.setFillPattern(
+                FillPatternType.SOLID_FOREGROUND);
+
+        estiloFila1.setAlignment(HorizontalAlignment.CENTER);
+
+
+        CellStyle estiloFila2 = workbook.createCellStyle();
+
+        estiloFila2.setFillForegroundColor(
+                IndexedColors.LIGHT_GREEN.getIndex());
+
+        estiloFila2.setFillPattern(
+                FillPatternType.SOLID_FOREGROUND);
+
+        estiloFila2.setAlignment(HorizontalAlignment.CENTER);
+
     }
+
 }

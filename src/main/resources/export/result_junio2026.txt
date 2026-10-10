@@ -1,0 +1,6 @@
+Fecha: junio2026
+NumeroDeVehiculos: 5
+BeneficioTotal: 1223.73
+Ruta del Fichero: C:\Users\aaron\OneDrive\Escritorio\ad-ec-ra1-practica-OTAZU-AARON-SANTURDE-ISMAEL\src\main\resources\xml\inventario_junio2026.xml
+Nombre del Fichero: inventario_junio2026
+Tamaño del Fichero: 3797 bytes
